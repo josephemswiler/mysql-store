@@ -113,7 +113,7 @@ function addNew() {
             dbConnection.query(query, newProd, function (err, res) {})
             return answers.name
         })
-        .then(prodAdded => console.log('\x1b[31m%s\x1b[0m', `The new product of ${prodAdded} has been added!`))
+        .then(prodAdded => console.log("\n" + `The new product named ${ansi.red(prodAdded)} has been added!` + "\n"))
         .then(next => runMgr())
 }
 
@@ -145,7 +145,7 @@ function addInv() {
         .then(function (answers) {
             switch (answers.addType) {
                 case 'Search by Product Name':
-                    //search
+                    searchProdNames()
                     break
                 case 'View List of Product Names':
                     listProdNames()
@@ -159,6 +159,26 @@ function addInv() {
 
 function searchProdNames() {
     let selectedProduct = ''
+    return inquirer.prompt([{
+            type: 'input',
+            name: 'product',
+            message: 'Enter a product name to search:'
+        }])
+        .then(answers => {
+            selectedProduct = answers.product
+            let query = 'SELECT * FROM products WHERE ?'
+            return dbConnection.query(query, {
+                    product_name: selectedProduct
+                })
+                .then(searchResult => {
+                    if (searchResult.length >= 1) {
+                        getQuantity(selectedProduct)
+                    } else {
+                        console.log("\n" + `Oh no! There were no products named ${ansi.red(selectedProduct)} found. Please search again or use the "View List of Product Names" option to make your selection.`+ "\n")
+                        runMgr()
+                    }
+                })
+        })
 }
 
 function listProdNames() {
@@ -180,28 +200,29 @@ function listProdNames() {
                 choices: arr
             }])
         })
-        .then(selection => {
-            selectedProduct = selection.product
-            return inquirer.prompt([{
-                type: 'input',
-                name: 'addQuantity',
-                message: `Enter quantity of additional stock to add to ${ansi.red(selectedProduct)}:`,
-                validate: function (input) {
-                    if (isNaN(input)) {
-                        console.log(ansi.red(` Please enter a number!`))
-                        return false
-                    } else if (input === '') {
-                        console.log(ansi.red(`Please enter a quantity!`))
-                        return false
-                    } else if (input < 1) {
-                        console.log(ansi.red(` Please enter a quantity greater than 1!`))
-                        return false
-                    }
-                    return true
+        .then(selection => getQuantity(selection.product))
+}
+
+function getQuantity(selection) {
+    return inquirer.prompt([{
+            type: 'input',
+            name: 'addQuantity',
+            message: `Enter quantity of additional stock to add to ${ansi.red(selection)}:`,
+            validate: function (input) {
+                if (isNaN(input)) {
+                    console.log(ansi.red(` Please enter a number!`))
+                    return false
+                } else if (input === '') {
+                    console.log(ansi.red(`Please enter a quantity!`))
+                    return false
+                } else if (input < 1) {
+                    console.log(ansi.red(` Please enter a quantity greater than 1!`))
+                    return false
                 }
-            }])
-        })
-        .then(added => sumQuantityUpdate(selectedProduct, added.addQuantity))
+                return true
+            }
+        }])
+        .then(added => sumQuantityUpdate(selection, added.addQuantity))
 }
 
 function sumQuantityUpdate(product, amountAdded) {
