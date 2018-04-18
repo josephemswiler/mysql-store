@@ -1,6 +1,7 @@
 let mysql = require('promise-mysql')
 let inquirer = require('inquirer')
-let asTable = require('as-table')
+let ansi = require('ansicolor')
+let asTable = require('as-table').configure ({ title: x => ansi.red(x), delimiter: ansi.black(' | '), dash: ansi.black('-') })
 let Product = require('./product.js')
 let dbConnection = null
 
@@ -114,7 +115,7 @@ function viewProd() {
     let query = 'SELECT * FROM products'
     return dbConnection.query(query)
     .then(allProd => {
-        console.log('\x1b[31m%s\x1b[0m', asTable(allProd))
+        console.log(ansi.cyan(asTable(allProd)))
     })
     .then(next => runMgr())
 
