@@ -113,7 +113,9 @@ function addNew() {
 function viewProd() {
     let query = 'SELECT * FROM products'
     return dbConnection.query(query)
-    .then(allProd => console.log('\x1b[31m%s\x1b[0m', allProd))
+    .then(allProd => {
+        console.log('\x1b[31m%s\x1b[0m', asTable(allProd))
+    })
     .then(next => runMgr())
 
 }
