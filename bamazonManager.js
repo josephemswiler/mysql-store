@@ -158,7 +158,7 @@ function addInv() {
 }
 
 function searchProdNames() {
-
+    let selectedProduct = ''
 }
 
 function listProdNames() {
@@ -201,19 +201,25 @@ function listProdNames() {
                 }
             }])
         })
-        .then(added => {
-            console.log(selectedProduct, added.addQuantity)
-            //update with quantity add
-            // let currentQuantity = dbConnection.query('SELECT stock_quantity FROM products WHERE ?', { product_name: })
-            //     dbConnection.query("UPDATE products SET ? WHERE ?", [\{
-            //                 quantity: added
-            //             },
-            //             {
-            //                 flavor: "Rocky Road"
-            //             }
-            //         ],
-            //     }
-            //     console.log(added.addQuantity))
+        .then(added => sumQuantityUpdate(selectedProduct, added.addQuantity))
+}
+
+function sumQuantityUpdate(product, amountAdded) {
+    //get current quantity, then add user inputed quantity, then update db
+    return dbConnection.query('SELECT stock_quantity FROM products WHERE ?', {
+            product_name: product
         })
+        .then(count => parseInt(count[0].stock_quantity) + parseInt(amountAdded))
+        .then(sum => {
+            dbConnection.query('UPDATE products SET ? WHERE ?', [{
+                    stock_quantity: sum
+                },
+                {
+                    product_name: product
+                }
+            ])
+            return sum
+        })
+        .then(sum => console.log("\n" + `The stock quantity of ${ansi.red(product)} was increased by ${ansi.red(amountAdded)} units to a total of ${ansi.red(sum)} units!` + "\n"))
         .then(next => runMgr())
 }
