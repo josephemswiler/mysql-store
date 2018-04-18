@@ -21,7 +21,6 @@ mysql
         return runMgr()
     })
 
-
 function runMgr() {
     inquirer.prompt([{
             type: 'list',
