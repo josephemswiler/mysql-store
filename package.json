@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/josephemswiler/mysql-store#readme",
   "dependencies": {
+    "as-table": "^1.0.31",
     "inquirer": "^5.2.0",
     "promise-mysql": "^3.2.1"
   }

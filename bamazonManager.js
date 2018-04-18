@@ -1,5 +1,6 @@
 let mysql = require('promise-mysql')
 let inquirer = require('inquirer')
+let asTable = require('as-table')
 let Product = require('./product.js')
 let dbConnection = null
 
@@ -27,6 +28,7 @@ function runMgr() {
             console.log(answer.mgrChoice)
             switch (answer.mgrChoice) {
                 case 'View Products for Sale':
+                    viewProd()
                     break
                 case 'View Low Inventory':
                     break
@@ -106,4 +108,12 @@ function addNew() {
         })
         .then(prodAdded => console.log('\x1b[31m%s\x1b[0m', `The new product of ${prodAdded} has been added!`))
         .then(next => runMgr())
+}
+
+function viewProd() {
+    let query = 'SELECT * FROM products'
+    return dbConnection.query(query)
+    .then(allProd => console.log('\x1b[31m%s\x1b[0m', allProd))
+    .then(next => runMgr())
+
 }
