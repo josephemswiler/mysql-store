@@ -73,13 +73,19 @@ function createDept() {
 }
 
 function deptSales() {
-    let totalSalesQuery = 'SELECT sum(product_sales) AS "total_sales" FROM products;'
-    
-    dbConnection.query(`
-        SELECT 
-            * 
-        FROM departments dept
-            LEFT JOIN products p 
-                ON product_sales
-            WHERE p.department_name = dept.department_name`)
+    return dbConnection.query(`
+    SELECT
+	    d.*,
+        sum(p.product_sales) as product_sales,
+        sum(product_sales) - d.over_head_costs as total_profit
+    FROM 
+        departments d
+    LEFT JOIN products p ON p.department_name = d.department_name
+        WHERE p.product_sales IS NOT NULL
+    GROUP BY d.department_name, d.department_id, d.over_head_costs
+    ORDER BY d.department_id ASC;`)
+    .then(table => {
+        console.log("\n" + ansi.cyan(asTable(table)) + "\n")
+    })
+    .then(none => runSupervisor())
 }
