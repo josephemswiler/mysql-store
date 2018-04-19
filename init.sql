@@ -67,7 +67,8 @@ INSERT INTO departments SET {
 
 SELECT
 	d.*,
-    sum(p.product_sales) as product_sales
+    sum(p.product_sales) as product_sales,
+    sum(product_sales) - d.over_head_costs as total_profit
 FROM
     departments d
        LEFT JOIN
@@ -76,4 +77,4 @@ FROM
 GROUP BY d.department_name, d.department_id, d.over_head_costs
 ORDER BY d.department_id ASC;
 
---join sum product_sales
+--join sum product_sales & total_profit alias
