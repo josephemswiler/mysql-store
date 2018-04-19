@@ -31,11 +31,13 @@ INSERT INTO products (
 
 -- insert into products
 
+DROP TABLE IF EXISTS departments;
+
 CREATE TABLE departments
 (
     department_id INTEGER UNSIGNED AUTO_INCREMENT NOT NULL,
     department_name VARCHAR(50) NULL,
-    over_head_costs FLOAT(10, 2) NULL,
+    over_head_costs FLOAT(10, 2) DEFAULT 0 NULL,
     PRIMARY KEY (department_id)
 );
 
@@ -49,3 +51,29 @@ ALTER TABLE products
 ALTER TABLE products DROP COLUMN product_sales;
 
 -- to delete column 
+
+INSERT INTO departments (
+    department_name
+    )
+    VALUES (
+        ''
+    );
+
+INSERT INTO departments SET {
+        department_name: name
+    };
+
+--to add departments
+
+SELECT
+	d.*,
+    sum(p.product_sales) as product_sales
+FROM
+    departments d
+       LEFT JOIN
+       products p ON p.department_name = d.department_name
+       WHERE p.product_sales IS NOT NULL
+GROUP BY d.department_name, d.department_id, d.over_head_costs
+ORDER BY d.department_id ASC;
+
+--join sum product_sales

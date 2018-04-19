@@ -79,14 +79,14 @@ function buyThings(prod, amount, stock, price, rev) {
     let result = stock - amount
     let cost = amount * price
     let totRev = rev + cost
-    return dbConnection.query('UPDATE products SET ? WHERE ?', [{
+    return dbConnection.query('UPDATE products SET ?, ? WHERE ?', [{
             stock_quantity: result
         },
         {
-            product_name: prod
+            product_sales: totRev
         },
         {
-            product_sales: totRev
+            product_name: prod
         }
     ])
     .then(data => {
