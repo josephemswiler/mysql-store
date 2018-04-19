@@ -21,17 +21,26 @@ mysql
     })
 
 
-function runCustomer() {
+function runCustomer(arr) {
     let selectedId = ''
     let selectedProd = ''
     let amount = 0
     let stock = 0
     let price = 0
     let rev = 0
+    let idArr = arr
+
     inquirer.prompt([{
             type: 'input',
             name: 'prodId',
-            message: 'Enter ID of the product you would like to buy:'
+            message: 'Enter ID of the product you would like to buy:',
+            validate: function (input) {
+                if (idArr.includes(parseInt(input))) {
+                    return true
+                } 
+                console.log(ansi.red(` Please enter a valid id!`))
+                return false
+            }
         }])
         .then(answers => {
             selectedId = answers.prodId
@@ -70,9 +79,15 @@ function viewProd() {
     let query = 'SELECT * FROM products'
     return dbConnection.query(query)
         .then(allProd => {
+            let arr = []
             console.log("\n" + ansi.cyan(asTable(allProd)) + "\n")
+
+            for (let i = 0; i < allProd.length; i++) {
+                arr.push(allProd[i].id)
+            }
+            return arr
         })
-        .then(next => runCustomer())
+        .then(arr => runCustomer(arr))
 }
 
 function buyThings(prod, amount, stock, price, rev) {
@@ -80,19 +95,19 @@ function buyThings(prod, amount, stock, price, rev) {
     let cost = amount * price
     let totRev = rev + cost
     return dbConnection.query('UPDATE products SET ?, ? WHERE ?', [{
-            stock_quantity: result
-        },
-        {
-            product_sales: totRev
-        },
-        {
-            product_name: prod
-        }
-    ])
-    .then(data => {
-        return console.log("\n" + `Congrats! You bought ${ansi.red(amount)} units of ${ansi.red(prod)} for a total cost of ${ansi.red(cost)}` + "\n")
-    //here
-    })
-    .then(data => dbConnection.end())
-    
+                stock_quantity: result
+            },
+            {
+                product_sales: totRev
+            },
+            {
+                product_name: prod
+            }
+        ])
+        .then(data => {
+            return console.log("\n" + `Congrats! You bought ${ansi.red(amount)} units of ${ansi.red(prod)} for a total cost of ${ansi.red(cost)}` + "\n")
+            //here
+        })
+        .then(data => dbConnection.end())
+
 }
