@@ -28,3 +28,13 @@ INSERT INTO products (
         29.98,
         800
     );
+
+-- insert into products
+
+CREATE TABLE departments
+(
+    department_id INTEGER UNSIGNED AUTO_INCREMENT NOT NULL,
+    department_name VARCHAR(50) NULL,
+    over_head_costs FLOAT(10, 2) NULL,
+    PRIMARY KEY (department_id)
+);
