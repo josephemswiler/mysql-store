@@ -173,7 +173,7 @@ function searchProdNames() {
                     if (searchResult.length >= 1) {
                         getQuantity(selectedProduct)
                     } else {
-                        console.log("\n" + `Oh no! There were no products named ${ansi.red(selectedProduct)} found. Please search again or use the "View List of Product Names" option to make your selection.`+ "\n")
+                        console.log("\n" + `Oh no! There were no products named ${ansi.red(selectedProduct)} found. Please search again or use the "View List of Product Names" option to make your selection.` + "\n")
                         runMgr()
                     }
                 })

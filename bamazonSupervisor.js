@@ -44,22 +44,23 @@ function runSupervisor() {
 
 function createDept() {
     return inquirer.prompt([{
-            type: 'input',
-            name: 'name',
-            message: 'Enter name of new Department:'
-        },
-    {
-        type: 'input',
-        name: 'overhead',
-        message: 'Enter overhead costs:',
-        validate: function (input) {
-            if (isNaN(input)) {
-                console.log(ansi.red(` Please enter a number!`))
-                return false
-            } 
-            return true
-        }
-    }])
+                type: 'input',
+                name: 'name',
+                message: 'Enter name of new Department:'
+            },
+            {
+                type: 'input',
+                name: 'overhead',
+                message: 'Enter overhead costs:',
+                validate: function (input) {
+                    if (isNaN(input)) {
+                        console.log(ansi.red(` Please enter a number!`))
+                        return false
+                    }
+                    return true
+                }
+            }
+        ])
         .then(answers => {
             dbConnection.query(`
                 INSERT INTO departments SET ?`, {
@@ -73,19 +74,19 @@ function createDept() {
 }
 
 function deptSales() {
-    return dbConnection.query(`
-    SELECT
-	    d.*,
-        sum(p.product_sales) as product_sales,
-        sum(product_sales) - d.over_head_costs as total_profit
-    FROM 
-        departments d
-    LEFT JOIN products p ON p.department_name = d.department_name
-        WHERE p.product_sales IS NOT NULL
-    GROUP BY d.department_name, d.department_id, d.over_head_costs
-    ORDER BY d.department_id ASC;`)
-    .then(table => {
-        console.log("\n" + ansi.cyan(asTable(table)) + "\n")
-    })
-    .then(none => runSupervisor())
+    return dbConnection
+        .query(`SELECT
+                    d.*,
+                    sum(p.product_sales) as product_sales,
+                    sum(product_sales) - d.over_head_costs as total_profit
+                FROM 
+                    departments d
+                LEFT JOIN products p ON p.department_name = d.department_name
+                    WHERE p.product_sales IS NOT NULL
+                GROUP BY d.department_name, d.department_id, d.over_head_costs
+                ORDER BY d.department_id ASC;`)
+        .then(table => {
+            console.log("\n" + ansi.cyan(asTable(table)) + "\n")
+        })
+        .then(none => runSupervisor())
 }

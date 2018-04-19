@@ -37,7 +37,7 @@ function runCustomer(arr) {
             validate: function (input) {
                 if (idArr.includes(parseInt(input))) {
                     return true
-                } 
+                }
                 console.log(ansi.red(` Please enter a valid id!`))
                 return false
             }
