@@ -38,3 +38,14 @@ CREATE TABLE departments
     over_head_costs FLOAT(10, 2) NULL,
     PRIMARY KEY (department_id)
 );
+
+-- create departments table
+
+ALTER TABLE products
+    ADD COLUMN product_sales FLOAT(10, 2) DEFAULT 0 AFTER stock_quantity;
+
+-- to add column with default value of 0
+
+ALTER TABLE products DROP COLUMN product_sales;
+
+-- to delete column 

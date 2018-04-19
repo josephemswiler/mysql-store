@@ -27,6 +27,7 @@ function runCustomer() {
     let amount = 0
     let stock = 0
     let price = 0
+    let rev = 0
     inquirer.prompt([{
             type: 'input',
             name: 'prodId',
@@ -34,7 +35,7 @@ function runCustomer() {
         }])
         .then(answers => {
             selectedId = answers.prodId
-            return dbConnection.query('SELECT product_name, stock_quantity, price FROM products WHERE ?', {
+            return dbConnection.query('SELECT * FROM products WHERE ?', {
                 id: answers.prodId
             })
         })
@@ -42,6 +43,7 @@ function runCustomer() {
             price = product[0].price
             stock = product[0].stock_quantity
             selectedProd = product[0].product_name
+            rev = product[0].product_sales
             return inquirer.prompt([{
                 type: 'input',
                 name: 'prodAmount',
@@ -61,7 +63,7 @@ function runCustomer() {
                 }
             }])
         })
-        .then(answers => buyThings(selectedProd, answers.prodAmount, stock, price))
+        .then(answers => buyThings(selectedProd, answers.prodAmount, stock, price, rev))
 }
 
 function viewProd() {
@@ -73,18 +75,23 @@ function viewProd() {
         .then(next => runCustomer())
 }
 
-function buyThings(prod, amount, stock, price) {
+function buyThings(prod, amount, stock, price, rev) {
     let result = stock - amount
     let cost = amount * price
+    let totRev = rev + cost
     return dbConnection.query('UPDATE products SET ? WHERE ?', [{
             stock_quantity: result
         },
         {
             product_name: prod
+        },
+        {
+            product_sales: totRev
         }
     ])
     .then(data => {
         return console.log("\n" + `Congrats! You bought ${ansi.red(amount)} units of ${ansi.red(prod)} for a total cost of ${ansi.red(cost)}` + "\n")
+    //here
     })
     .then(data => dbConnection.end())
     
