@@ -174,7 +174,7 @@ function searchProdNames() {
                         getQuantity(selectedProduct)
                     } else {
                         console.log("\n" + `Oh no! There were no products named ${ansi.red(selectedProduct)} found. Please search again or use the "View List of Product Names" option to make your selection.` + "\n")
-                        runMgr()
+                        addInv()
                     }
                 })
         })
@@ -214,8 +214,8 @@ function getQuantity(selection) {
                 } else if (input === '') {
                     console.log(ansi.red(`Please enter a quantity!`))
                     return false
-                } else if (input < 1) {
-                    console.log(ansi.red(` Please enter a quantity greater than 1!`))
+                } else if (input < 0) {
+                    console.log(ansi.red(` Please enter a quantity greater than 0!`))
                     return false
                 }
                 return true
