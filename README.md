@@ -8,9 +8,9 @@
   * 'View Products for Sale'
   * 'View Low Inventory'
   * 'Add to Inventory' 
-   * 'Search by Product Name'
-   * 'View List of Product Names'
-   * 'Return to Menu'
+    * 'Search by Product Name'
+    * 'View List of Product Names'
+    * 'Return to Menu'
   * 'Add New Product'
   * 'Quit'
   
