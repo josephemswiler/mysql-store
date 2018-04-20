@@ -58,8 +58,8 @@ function runCustomer(arr) {
                 name: 'prodAmount',
                 message: `Enter the quantity of ${ansi.red(selectedProd)} you would like to buy:`,
                 validate: function (input) {
-                    if (isNaN(input)) {
-                        console.log(ansi.red(` Please enter a number!`))
+                    if (isNaN(input) || input < 0) {
+                        console.log(ansi.red(` Please enter a positive number!`))
                         return false
                     } else if (input === '') {
                         console.log(ansi.red(`Please enter a quantity!`))
