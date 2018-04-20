@@ -20,3 +20,5 @@
   * 'Quit'
   
 For additional information, see the walkthrough video below:
+
+[Bamazon CLI Application Walkthrough](https://youtu.be/wyWk5owXDZk "Walkthrough")
